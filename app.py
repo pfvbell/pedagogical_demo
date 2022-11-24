@@ -5,8 +5,7 @@ import openai as ai
 
 # Config
 MODEL = 'text-davinci-002'
-ai.api_key = "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"
-
+ai.api_key = st.secrets["openai_api_key"]
 # Helper function to call GPT
 def generate_response(MODEL, PROMPT, MAX_TOKENS=250, TEMP=0.99, TOP_P=0.5, N=1, FREQ_PEN=0.3, PRES_PEN = 0.9):
   response = ai.Completion.create(
