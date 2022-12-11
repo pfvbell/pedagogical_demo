@@ -45,8 +45,9 @@ st.sidebar.markdown("This worksheet generator was created using GPT-3. Please us
 st.sidebar.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18), emailing philipfvbell@gmail.com or tweeting @philipfvbell !!")
 st.sidebar.markdown("As a former teacher who found resource creation time-consuming so I made this tool to help teachers quickly make resources that are differentiable to their classes and can be on quite specific topics. I hope it helps!")
 ### Content ### - Either User-generated or from OpenAI. Alternative is to get it from Wikipedia.
+st.markdown("### Title/ Topic of worksheet")
 title = st.text_input('Title and topic of worksheet. For example: "The Social Effects of the Industrial Revolution", "What happens during Electrolysis?" or "The use of metaphor in Shakespeare\'s The Tempest Act 1"')
-
+title = title.rstrip() # Remove trailing whitespace in order to prevent image download recursion error.
 st.markdown("### Content")
 # content = st.text_input('Add the text you want your students to learn here')
 # st.markdown(" OR ")
@@ -54,6 +55,8 @@ st.text('The Worksheet will include a text for students to read which you can ad
 content_topic = title #st.text_input('Add a topic to autogenerate reading text: e.g. "The Causes of The Korean War"')
 content_length = st.slider('Number of Words for text', 0, 400)
 reading_age = st.slider('Reading Age', 0, 18)
+if reading_age ==0:
+    st.error('Please choose a reading age')
 # Add how long it should take a student of that age to read the text and answer the qs.
 
 st.markdown("### Worksheet Configuration")
