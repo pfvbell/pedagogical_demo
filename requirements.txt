@@ -7,4 +7,4 @@ htmldocx
 pybase64
 bing_image_downloader
 streamlit_login_auth_ui
-argon2
+argon2-cffi
