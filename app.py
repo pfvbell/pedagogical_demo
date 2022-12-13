@@ -43,10 +43,11 @@ st.markdown("## By Pedagogical 🧠")
 st.sidebar.markdown("# Automatic Worksheet Generator 🎈")
 st.sidebar.markdown("This worksheet generator was created using GPT-3. Please use it carefully and check any output before using it with learners as it could be biased or wrong.")
 st.sidebar.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18), emailing philipfvbell@gmail.com or tweeting @philipfvbell !!")
-st.sidebar.markdown("As a former teacher who found resource creation time-consuming so I made this tool to help teachers quickly make resources that are differentiable to their classes and can be on quite specific topics. I hope it helps!")
+st.sidebar.markdown("As a former teacher who found resource creation time-consuming I made this tool to help teachers quickly make resources that are differentiable to their classes and can be on quite specific topics. I hope it helps!")
+st.sidebar.markdown("[Here](https://docs.google.com/document/d/1rHJIG4ZkCzkZFTD3CHWSpKtKtzVsfyaSMo6SgQddfOc/edit) is a list of examples of great resources which have been made using this tool. If you have any examples to add please add them [here](https://forms.gle/TfLKWvsCxeKaLYxc9).")
 ### Content ### - Either User-generated or from OpenAI. Alternative is to get it from Wikipedia.
 st.markdown("### Title/ Topic of worksheet")
-title = st.text_input('Title and topic of worksheet. For example: "The Social Effects of the Industrial Revolution", "What happens during Electrolysis?" or "The use of metaphor in Shakespeare\'s The Tempest Act 1"')
+title = st.text_input('Title and topic of worksheet. For example: "The impact of the Industrial Revolution on the climate", "How to write a Python list comprehension", "What happens during Electrolysis?" or "The use of metaphor in Shakespeare\'s The Tempest Act 1"')
 title = title.rstrip() # Remove trailing whitespace in order to prevent image download recursion error.
 st.markdown("### Content")
 # content = st.text_input('Add the text you want your students to learn here')
@@ -54,7 +55,7 @@ st.markdown("### Content")
 st.text('The Worksheet will include a text for students to read which you can adapt:')
 content_topic = title #st.text_input('Add a topic to autogenerate reading text: e.g. "The Causes of The Korean War"')
 content_length = st.slider('Number of Words for text', 0, 400)
-reading_age = st.slider('Reading Age', 0, 18)
+reading_age = st.slider('Reading Age (These are approximate)', 0, 18)
 if reading_age ==0:
     st.error('Please choose a reading age')
 # Add how long it should take a student of that age to read the text and answer the qs.
@@ -90,6 +91,8 @@ if worksheet_button:
     else:
         q_prompt = (f'write 5 questions about the following text: {content}')
     q_and_or_a = generate_response(MODEL, q_prompt, MAX_TOKENS=250)
+    q_and_or_a_list = q_and_or_a.splitlines()
+    print(q_and_or_a_list)
 
     if key_words_definitions:
         key_words_prompt = (f'Extract key words from this text and provide definitions of the words not using words from the text itself: {content}')
@@ -103,30 +106,33 @@ if worksheet_button:
     # st.text(content)
 
     # st.text(q_and_or_a)
+    try:
+        query_string = title
+        downloader.download(query_string, limit=1,  output_dir='images', adult_filter_off=False, force_replace=False, timeout=60, verbose=True)
+        # More options here: https://pypi.org/project/bing-image-downloader/
 
-    query_string = title
-    downloader.download(query_string, limit=1,  output_dir='images', adult_filter_off=False, force_replace=False, timeout=60, verbose=True)
-    # More options here: https://pypi.org/project/bing-image-downloader/
+        ### Select word or PDF ###
+        f = open('worksheet.html','w')
 
-    ### Select word or PDF ###
-    f = open('worksheet.html','w')
+        # folder path
+        dir_path = f'images/{query_string}'
 
-    # folder path
-    dir_path = f'images/{query_string}'
+        # list to store files
+        res = []
 
-    # list to store files
-    res = []
+        # Iterate directory
+        for path in os.listdir(dir_path):
+            # check if current path is a file
+            if os.path.isfile(os.path.join(dir_path, path)):
+                res.append(path)
+        print(res)
 
-    # Iterate directory
-    for path in os.listdir(dir_path):
-        # check if current path is a file
-        if os.path.isfile(os.path.join(dir_path, path)):
-            res.append(path)
-    print(res)
-
-    image1 = Image.open(f'images/{query_string}/{res[0]}')
-    image1 = image1.resize((80, 80))
-    image1.save(f'images/{query_string}/{res[0]}')
+        image1 = Image.open(f'images/{query_string}/{res[0]}')
+        image1 = image1.resize((80, 80))
+        image1.save(f'images/{query_string}/{res[0]}')
+    except Exception as e:
+        print(e)
+        st.text('No image found for this topic.')
 
     worksheet_head = f"""<html>
     <head>
@@ -136,20 +142,30 @@ if worksheet_button:
     <h1>{title}</h1>
     <body>
     <p>Name ......... </p>
-    <img src="images/{query_string}/{res[0]}" alt="Image 1" style="float:left;width:15px;height:15px;"
     <p> <b> <br></b>
     <h2> Read the following text and underline any key words </h2>
 
     <p>{content}</p>"""
+    if image1:
+        image_component = f"""
+        <img src="images/{query_string}/{res[0]}" alt="Image 1" style="float:left;width:15px;height:15px;"
+        """
+        components.append(image_component)
+
 
     if key_words_definitions:
         key_word_component = f"""<h3>Key Words</h3>
         <p>{key_words}</p>"""
         components.append(key_word_component)
-
-    question_component =  f"""<h2> And now answer the following questions!</h2>
-    <p>{q_and_or_a}</p>
+    
+    question_title =  f"""<h2> And now answer the following questions!</h2>
+    <p> <b> <br></b>
     """
+    components.append(question_title)
+    #q_and_or_a_list = [question for question in q_and_or_a_list if '?' in question]
+    q_and_or_a_list = q_and_or_a_list[2:] # Remove first two lines which are spaces
+    question_component = [question + '<br> ................................................. </p>' for question in q_and_or_a_list]
+    question_component = '<p>'.join(question_component)
     components.append(question_component)
     #✏️
     # 📖
