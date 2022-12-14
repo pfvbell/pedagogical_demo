@@ -49,6 +49,7 @@ __login__obj = __login__(auth_token = "courier_auth_token",
 LOGGED_IN = __login__obj.build_login_ui()
 
 if LOGGED_IN == True:
+    st.text('Test')
 
     ### TOP OF PAGE ###
     st.title("Automatic Worksheet Generator 🎈 (Beta)")
