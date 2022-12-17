@@ -164,7 +164,8 @@ if LOGGED_IN == True:
 
 
             if key_words_definitions:
-                key_word_component = f"""<h3>Key Words</h3>
+                key_word_component = f"""<p>    </p> 
+                <h3>Key Words</h3>
                 <p>{key_words}</p>"""
                 components.append(key_word_component)
             
