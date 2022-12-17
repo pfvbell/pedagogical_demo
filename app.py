@@ -15,6 +15,7 @@ import uuid
 import re
 import shutil
 from streamlit_login_auth_ui.widgets import __login__
+import requests
 
 # Add sidebar stuff and on_submit button stuff.
 
@@ -38,6 +39,8 @@ def generate_response(MODEL, PROMPT, MAX_TOKENS=750, TEMP=0.99, TOP_P=0.5, N=1, 
       )
   return response['choices'][0]['text']
 
+def generate_image_response(IMG_PROMPT, SIZE):
+
 
 __login__obj = __login__(auth_token = "courier_auth_token", 
                     company_name = "Shims",
@@ -49,13 +52,14 @@ __login__obj = __login__(auth_token = "courier_auth_token",
 LOGGED_IN = __login__obj.build_login_ui()
 
 if LOGGED_IN == True:
+    
 
     ### TOP OF PAGE ###
     st.title("Automatic Worksheet Generator 🎈 (Beta)")
     st.markdown("## By Pedagogical 🧠")
     st.sidebar.markdown("# Automatic Worksheet Generator 🎈")
     st.sidebar.markdown("This worksheet generator was created using GPT-3. Please use it carefully and check any output before using it with learners as it could be biased or wrong.")
-    st.sidebar.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18), emailing philipfvbell@gmail.com or tweeting @philipfvbell !!")
+    st.sidebar.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18), scheduling [a call with me](https://calendly.com/philipfvbell), emailing philipfvbell@gmail.com or tweeting @philipfvbell !!")
     st.sidebar.markdown("As a former teacher who found resource creation time-consuming I made this tool to help teachers quickly make resources that are differentiable to their classes and can be on quite specific topics. I hope it helps!")
     st.sidebar.markdown("[Here](https://docs.google.com/document/d/1rHJIG4ZkCzkZFTD3CHWSpKtKtzVsfyaSMo6SgQddfOc/edit) is a list of examples of great resources which have been made using this tool. If you have any examples to add please add them [here](https://forms.gle/TfLKWvsCxeKaLYxc9).")
     ### Content ### - Either User-generated or from OpenAI. Alternative is to get it from Wikipedia.
