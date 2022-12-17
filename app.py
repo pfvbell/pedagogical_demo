@@ -138,7 +138,7 @@ if LOGGED_IN == True:
                 print(res)
 
                 image1 = Image.open(f'images/{query_string}/{res[0]}')
-                image1 = image1.resize((80, 80))
+                image1 = image1.resize((150, 150))
                 image1.save(f'images/{query_string}/{res[0]}')
             except Exception as e:
                 print(e)
@@ -152,13 +152,13 @@ if LOGGED_IN == True:
             <h1>{title}</h1>
             <body>
             <p>Name ......... </p>
-            <p> <b> <br></b>
+            <p> </p>
             <h2> Read the following text and underline any key words </h2>
 
             <p>{content}</p>"""
             if image1:
                 image_component = f"""
-                <img src="images/{query_string}/{res[0]}" alt="Image 1" style="float:left;width:15px;height:15px;"
+                <img src="images/{query_string}/{res[0]}" alt="Image 1" style="float:left;"
                 """
                 components.append(image_component)
 
