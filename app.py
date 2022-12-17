@@ -39,15 +39,8 @@ def generate_response(MODEL, PROMPT, MAX_TOKENS=750, TEMP=0.99, TOP_P=0.5, N=1, 
       )
   return response['choices'][0]['text']
 
-def generate_image_response(IMG_PROMPT, SIZE):
 
-
-__login__obj = __login__(auth_token = "courier_auth_token", 
-                    company_name = "Shims",
-                    width = 200, height = 250, 
-                    logout_button_name = 'Logout', hide_menu_bool = False, 
-                    hide_footer_bool = False, 
-                    lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json')
+__login__obj = __login__(auth_token = "courier_auth_token", company_name = "Shims",width = 200, height = 250, logout_button_name = 'Logout', hide_menu_bool = False, hide_footer_bool = False, lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json')
 
 LOGGED_IN = __login__obj.build_login_ui()
 
