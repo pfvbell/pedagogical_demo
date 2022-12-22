@@ -18,7 +18,6 @@ from streamlit_login_auth_ui.widgets import __login__
 import requests
 from google.oauth2 import service_account
 # from gsheetsdb import connect
-from shillelagh.backends.apsw.db import connect
 from gspread_pandas import Spread,Client
 import gspread_pandas
 # Add sidebar stuff and on_submit button stuff.
