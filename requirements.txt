@@ -7,4 +7,5 @@ htmldocx
 pybase64
 bing_image_downloader
 streamlit_login_auth_ui
-argon2-cffi
+gsheetsdb
+gspread_pandas
