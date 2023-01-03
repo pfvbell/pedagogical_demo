@@ -330,6 +330,7 @@ if worksheet_button and checked:
         data=wordbyte,
         file_name="pedagogical_worksheet.docx",
         mime='application/octet-stream')
+        st.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18)!")
 
     # else:
     #     st.error('Incorrect Token')      
