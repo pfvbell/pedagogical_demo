@@ -14,7 +14,7 @@ import pickle
 import uuid
 import re
 import shutil
-from streamlit_login_auth_ui.widgets import __login__
+#from streamlit_login_auth_ui.widgets import __login__
 import requests
 from google.oauth2 import service_account
 # from gsheetsdb import connect
