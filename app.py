@@ -14,12 +14,13 @@ import pickle
 import uuid
 import re
 import shutil
-from streamlit_login_auth_ui.widgets import __login__
+#from streamlit_login_auth_ui.widgets import __login__
 import requests
 from google.oauth2 import service_account
 # from gsheetsdb import connect
 from gspread_pandas import Spread,Client
 import gspread_pandas
+from datetime import date
 # Add sidebar stuff and on_submit button stuff.
 # Disable certificate verification (Not necessary always)
 import ssl
@@ -120,18 +121,21 @@ if worksheet_button and checked:
         # worksheet_list = sh.worksheets()
         # st.text(worksheet_list)
         read_df = spread.sheet_to_df(index=False)
-        st.text(read_df.columns)
+        #st.text(read_df.columns)
         emails = list(read_df.emails.values)
         prompts = list(read_df.prompts.values)
+        dates = list(read_df.dates.values)
+        today = date.today()
         emails.append(email)
         prompts.append(title)
+        dates.append(today)
 
         # sh = client.open('pedagogical')
         # Update to Sheet
         def update_the_spreadsheet(spreadsheetname,dataframe):
             spread.df_to_sheet(dataframe,sheet = spreadsheetname,index = False)
-            st.sidebar.info('Updated to GoogleSheet')
-        d = {'emails': emails, 'prompts': prompts}
+            #st.sidebar.info('Updated to GoogleSheet')
+        d = {'emails': emails, 'prompts': prompts, 'dates': dates}
         df = pd.DataFrame(data=d)
         update_the_spreadsheet('Sheet1',df)
         
