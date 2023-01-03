@@ -20,7 +20,7 @@ from google.oauth2 import service_account
 # from gsheetsdb import connect
 from gspread_pandas import Spread,Client
 import gspread_pandas
-from datetime import date
+from datetime import datetime
 # Add sidebar stuff and on_submit button stuff.
 # Disable certificate verification (Not necessary always)
 import ssl
@@ -125,7 +125,7 @@ if worksheet_button and checked:
         emails = list(read_df.emails.values)
         prompts = list(read_df.prompts.values)
         dates = list(read_df.dates.values)
-        today = date.today()
+        today = datetime.now()
         emails.append(email)
         prompts.append(title)
         dates.append(today)
