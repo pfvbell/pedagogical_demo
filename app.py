@@ -79,7 +79,7 @@ st.markdown("### Content")
 # st.markdown(" OR ")
 st.text('The Worksheet will include a text for students to read which you can adapt:')
 content_topic = title #st.text_input('Add a topic to autogenerate reading text: e.g. "The Causes of The Korean War"')
-content_length = st.slider('Number of Words for text', 0, 400)
+content_length = st.slider('Number of Words for text', 0, 1000)
 reading_age = st.slider('Reading Age (These are approximate)', 0, 18)
 if reading_age ==0:
     st.error('Please choose a reading age')
