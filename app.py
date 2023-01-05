@@ -242,7 +242,7 @@ if worksheet_button and checked:
         dates.append(today)
         num_words_list.append(content_length)
         reading_age_list.append(reading_age)
-        fields_str = ''.join(fields)
+        fields_str = ','.join(fields)
         components_list.append(fields_str)
         
         def update_the_spreadsheet(spreadsheetname,dataframe):
