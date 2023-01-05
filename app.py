@@ -67,9 +67,8 @@ st.markdown("## By Pedagogical 🧠")
 email = st.text_input('Email')
 st.sidebar.markdown("# Automatic Worksheet Generator 🎈")
 st.sidebar.markdown("This worksheet generator was created using GPT-3. Please use it carefully and check any output before using it with learners as it could be biased or wrong.")
-st.sidebar.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18), scheduling [a call with me](https://calendly.com/philipfvbell), emailing philipfvbell@gmail.com or tweeting @philipfvbell !!")
+st.sidebar.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18) !!")
 st.sidebar.markdown("As a former teacher who found resource creation time-consuming I made this tool to help teachers quickly make resources that are differentiable to their classes and can be on quite specific topics. I hope it helps!")
-st.sidebar.markdown("[Here](https://docs.google.com/document/d/1rHJIG4ZkCzkZFTD3CHWSpKtKtzVsfyaSMo6SgQddfOc/edit) is a list of examples of great resources which have been made using this tool. If you have any examples to add please add them [here](https://forms.gle/TfLKWvsCxeKaLYxc9).")
 ### Content ### - Either User-generated or from OpenAI. Alternative is to get it from Wikipedia.
 st.markdown("### Title/ Topic of worksheet")
 title = st.text_input('Title and topic of worksheet. For example: "The impact of the Industrial Revolution on the climate", "How to write a Python list comprehension", "What happens during Electrolysis?" or "The use of metaphor in Shakespeare\'s The Tempest Act 1"')
@@ -79,7 +78,7 @@ st.markdown("### Content")
 # st.markdown(" OR ")
 st.text('The Worksheet will include a text for students to read which you can adapt:')
 content_topic = title #st.text_input('Add a topic to autogenerate reading text: e.g. "The Causes of The Korean War"')
-content_length = st.slider('Number of Words for text', 0, 1000)
+content_length = st.slider('Number of Words for text', 0, 500)
 reading_age = st.slider('Reading Age (These are approximate)', 0, 18)
 if reading_age ==0:
     st.error('Please choose a reading age')
@@ -109,75 +108,7 @@ if worksheet_button and checked:
 ### Worksheet Options ###
 
     with st.spinner(text='Your worksheet is in the oven 🧠'):
-        # Create a Google Authentication connection object
-        scope = ['https://spreadsheets.google.com/feeds']
 
-        credentials = service_account.Credentials.from_service_account_info(
-                        st.secrets["gcp_service_account"], scopes = scope)
-        client = Client(scope=scope,creds=credentials)
-        spreadsheetname = st.secrets["private_gsheets_url"]
-        spread = Spread(spreadsheetname,client = client)
-        # sh = client.open(spreadsheetname)
-        # worksheet_list = sh.worksheets()
-        # st.text(worksheet_list)
-        read_df = spread.sheet_to_df(index=False)
-        #st.text(read_df.columns)
-        emails = list(read_df.emails.values)
-        prompts = list(read_df.prompts.values)
-        dates = list(read_df.dates.values)
-        today = datetime.now()
-        emails.append(email)
-        prompts.append(title)
-        dates.append(today)
-
-        # sh = client.open('pedagogical')
-        # Update to Sheet
-        def update_the_spreadsheet(spreadsheetname,dataframe):
-            spread.df_to_sheet(dataframe,sheet = spreadsheetname,index = False)
-            #st.sidebar.info('Updated to GoogleSheet')
-        d = {'emails': emails, 'prompts': prompts, 'dates': dates}
-        df = pd.DataFrame(data=d)
-        update_the_spreadsheet('Sheet1',df)
-        
-    # Create a connection object to send details to Private Google Sheet.
-        # credentials = service_account.Credentials.from_service_account_info(
-        #     st.secrets["gcp_service_account"],
-        #     scopes=[
-        #         "https://www.googleapis.com/auth/spreadsheets",
-        #     ],
-        # )
-        # connection = connect(":memory:", adapter_kwargs={
-        #     "gsheetaspi" : { 
-        #     "service_account_info" : {
-        #         "type" : st.secrets["gcp_service_account"]["type"],
-        #         "project_id" : st.secrets["gcp_service_account"]["project_id"],
-        #         "private_key_id" : st.secrets["gcp_service_account"]["private_key_id"],
-        #         "private_key" : st.secrets["gcp_service_account"]["private_key"],
-        #         "client_email" : st.secrets["gcp_service_account"]["client_email"],
-        #         "client_id" : st.secrets["gcp_service_account"]["client_id"],
-        #         "auth_uri" : st.secrets["gcp_service_account"]["auth_uri"],
-        #         "token_uri" : st.secrets["gcp_service_account"]["token_uri"],
-        #         "auth_provider_x509_cert_url" : st.secrets["gcp_service_account"]["auth_provider_x509_cert_url"],
-        #         "client_x509_cert_url" : st.secrets["gcp_service_account"]["client_x509_cert_url"],
-        #         }
-        #     },
-        # })
-        # #@st.cache(ttl=600)
-        # cursor = connection.cursor()
-        # sheet_url = st.secrets["private_gsheets_url"]
-        # query = f'INSERT INTO "{sheet_url}" (email, prompt) VALUES ({email}, {title})'
-        # for row in cursor.execute(query):
-        #     st.text(row)
-        # def run_query(query):
-        #     ex = conn.execute(query, headers=1)
-        #     ex = ex.fetchall()
-        #     return ex
-        # sheet_url = st.secrets["private_gsheets_url"]
-        # test = run_query(f'SELECT prompt FROM "{sheet_url}"')
-        # st.write(test)
-        #write_to_sheet = run_query(f'INSERT INTO "{sheet_url}" (email, prompt) VALUES ({email}, {title})')
-
-        # st.markdown(f"# {title} ✍")
         components = []
         content_prompt = (f'Write {str(content_length)} words about ' + content_topic + ' so that a ' + str(reading_age) + ' year old could understand it.')
         content = generate_response(MODEL, content_prompt)
@@ -193,15 +124,12 @@ if worksheet_button and checked:
         if key_words_definitions:
             key_words_prompt = (f'Extract key words from this text and provide definitions of the words not using words from the text itself: {content}')
             key_words = generate_response(MODEL, key_words_prompt, MAX_TOKENS=600)
-        # st.text(key_words)
+
         if thesaurus_paragraph_writing:
             thesaurus_prompt = (f'Extract key words from this text and provide words with similar semantic meaning for each word: {content}')
             thesaurus_words = generate_response(MODEL, thesaurus_prompt, MAX_TOKENS=500)
-            #Find the most important words used in connection with the American Civil War and explain what they mean
-        # st.text(thesaurus_words)
-        # st.text(content)
 
-        # st.text(q_and_or_a)
+
         try:
             query_string = title
             downloader.download(query_string, limit=1,  output_dir='images', adult_filter_off=False, force_replace=False, timeout=60, verbose=True)
@@ -302,15 +230,42 @@ if worksheet_button and checked:
                 full_worksheet += component
 
         full_worksheet += worksheet_end
-        # full_worksheet = worksheet_head +  question_component + key_word_component + because_but_so_component +  thesaurus_paragraph_component + worksheet_end
-        ##### ADD WORKSHEET TYPES #####
-        # if ls_technique == 'Knowledge':
-        #     full_worksheet = worksheet_head + worksheet_questions + worksheet_storyboard + worksheet_end
-        # else: 
-        #     full_worksheet = worksheet_head + worksheet_questions + worksheet_writing_rev + worksheet_end
 
         f.write(full_worksheet)
         f.close()
+                # Create a Google Authentication connection object
+        scope = ['https://spreadsheets.google.com/feeds']
+
+        credentials = service_account.Credentials.from_service_account_info(
+                        st.secrets["gcp_service_account"], scopes = scope)
+        client = Client(scope=scope,creds=credentials)
+        spreadsheetname = st.secrets["private_gsheets_url"]
+        spread = Spread(spreadsheetname,client = client)
+        # sh = client.open(spreadsheetname)
+        # worksheet_list = sh.worksheets()
+        # st.text(worksheet_list)
+        read_df = spread.sheet_to_df(index=False)
+        #st.text(read_df.columns)
+        emails = list(read_df.emails.values)
+        prompts = list(read_df.prompts.values)
+        dates = list(read_df.dates.values)
+        num_words_list = list(read_df.num_words.values)
+        reading_age_list = list(read_df.reading_age.values)
+        components_list = list(read_df.components.values)
+        today = datetime.now()
+        emails.append(email)
+        prompts.append(title)
+        dates.append(today)
+        num_words_list.append(content_length)
+        reading_age_list.append(reading_age)
+        components_list.append(components)
+        
+        def update_the_spreadsheet(spreadsheetname,dataframe):
+          spread.df_to_sheet(dataframe,sheet = spreadsheetname,index = False)
+            #st.sidebar.info('Updated to GoogleSheet')
+        d = {'emails': emails, 'prompts': prompts, 'dates': dates, 'num_words': num_words_list, 'reading_age': reading_age_list, 'components': components_list}
+        df = pd.DataFrame(data=d)
+        update_the_spreadsheet('Sheet1',df)
 
         new_parser = HtmlToDocx()
         new_parser.parse_html_file("worksheet.html", "worksheet")
@@ -331,7 +286,3 @@ if worksheet_button and checked:
         file_name="pedagogical_worksheet.docx",
         mime='application/octet-stream')
         st.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18)!")
-
-    # else:
-    #     st.error('Incorrect Token')      
-    #     st.text('Go to https://forms.gle/JQaCeVtbMbzpLttK9 and sign up to get a token') 
