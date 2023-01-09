@@ -81,6 +81,7 @@ st.markdown("""---""")
 st.text('')
 st.markdown('See [Terms and Conditions](https://docs.google.com/document/d/1sCf03ZfMe-VFaMVwzqOwbjKrw-KsP_WOM_-MaHQHXgQ/edit) of using the app')
 checked = st.checkbox('I agree to the Terms & Conditions')
+# mail_list = st.checkbox("I'd like to help improve this app including contact via email")
 worksheet_button = st.button('Generate Worksheet')
 if worksheet_button and checked:
 ### Worksheet Options ###
@@ -89,15 +90,20 @@ if worksheet_button and checked:
 
         components = []
         fields = []
+        
         content_prompt = (f'Write {str(content_length)} words about ' + content_topic + ' so that a ' + str(reading_age) + ' year old could understand it.')
         content = generate_response(MODEL, content_prompt)
         
         if qs and answers:
             q_prompt = (f'write 5 questions and answers about the following text: {content}')
             fields.append('Qs and Answers')
+            q_field = 1
+            qa_field = 0
         else:
             q_prompt = (f'write 5 questions about the following text: {content}')
             fields.append('Qs')
+            qa_field = 1
+            q_field = 0
         q_and_or_a = generate_response(MODEL, q_prompt, MAX_TOKENS=250)
         q_and_or_a_list = q_and_or_a.splitlines()
         print(q_and_or_a_list)
@@ -106,11 +112,22 @@ if worksheet_button and checked:
             key_words_prompt = (f'Extract key words from this text and provide definitions of the words not using words from the text itself: {content}')
             key_words = generate_response(MODEL, key_words_prompt, MAX_TOKENS=600)
             fields.append('Key Words')
+            kw_field = 1
+        else:
+            kw_field=0
 
         if thesaurus_paragraph_writing:
             thesaurus_prompt = (f'Extract key words from this text and provide words with similar semantic meaning for each word: {content}')
             thesaurus_words = generate_response(MODEL, thesaurus_prompt, MAX_TOKENS=500)
             fields.append('Paragraph')
+            pw_field = 1
+        else:
+            pw_field = 0
+        
+        if mail_list:
+            ml_field = 1
+        else:
+            ml_field = 0
 
 
         try:
@@ -188,7 +205,9 @@ if worksheet_button and checked:
             </p>
             """
             components.append(because_but_so_component)
-            fields.append('BBS')
+            bbs_field = 1
+        else: 
+            bbs_field = 0
         if thesaurus_paragraph_writing:
             thesaurus_paragraph_component = f"""<h2> Write a Paragraph about {content_topic} using these key words</h2>
             <p>{thesaurus_words}</p>"""
@@ -236,19 +255,31 @@ if worksheet_button and checked:
         num_words_list = list(read_df.num_words.values)
         reading_age_list = list(read_df.reading_age.values)
         components_list = list(read_df.components.values)
+        q_field_list = list(read_df.q_field.values)
+        qa_field_list = list(read_df.qa_field.values)
+        kw_field_list = list(read_df.kw_field.values)
+        pw_field_list = list(read_df.pw_field.values)
+        bbs_field_list = list(read_df.bbs_field.values)
+        q_field_list.append(q_field)
+        qa_field_list.append(qa_field)
+        kw_field_list.append(kw_field)
+        pw_field_list.append(pw_field)
+        bbs_field_list.append(bbs_field)
         today = datetime.now()
         emails.append(email)
         prompts.append(title)
         dates.append(today)
         num_words_list.append(content_length)
         reading_age_list.append(reading_age)
-        fields_str = ','.join(fields)
-        components_list.append(fields_str)
+        # fields_str = ','.join(fields)
+        # components_list.append(fields_str)
         
         def update_the_spreadsheet(spreadsheetname,dataframe):
           spread.df_to_sheet(dataframe,sheet = spreadsheetname,index = False)
             #st.sidebar.info('Updated to GoogleSheet')
-        d = {'emails': emails, 'prompts': prompts, 'dates': dates, 'num_words': num_words_list, 'reading_age': reading_age_list, 'components': components_list}
+        d = {'emails': emails, 'prompts': prompts, 'dates': dates,
+         'num_words': num_words_list, 'reading_age': reading_age_list, 'q_field': q_field_list, 'qa_field': qa_field_list, 
+         'kw_field': kw_field_list, 'pw_field': pw_field_list, 'bbs_field': bbs_field_list}
         df = pd.DataFrame(data=d)
         update_the_spreadsheet('Sheet1',df)
 
