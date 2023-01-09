@@ -254,7 +254,7 @@ if worksheet_button and checked:
         dates = list(read_df.dates.values)
         num_words_list = list(read_df.num_words.values)
         reading_age_list = list(read_df.reading_age.values)
-        components_list = list(read_df.components.values)
+        # components_list = list(read_df.components.values)
         q_field_list = list(read_df.q_field.values)
         qa_field_list = list(read_df.qa_field.values)
         kw_field_list = list(read_df.kw_field.values)
