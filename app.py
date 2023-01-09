@@ -124,10 +124,10 @@ if worksheet_button and checked:
         else:
             pw_field = 0
         
-        if mail_list:
-            ml_field = 1
-        else:
-            ml_field = 0
+        # if mail_list:
+        #     ml_field = 1
+        # else:
+        #     ml_field = 0
 
 
         try:
