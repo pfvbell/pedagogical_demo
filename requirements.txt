@@ -6,6 +6,6 @@ numpy
 htmldocx
 pybase64
 bing_image_downloader
-streamlit_login_auth_ui
+backports.zoneinfo==0.2.1;python_version<"3.9"
 gsheetsdb
 gspread_pandas

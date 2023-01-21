@@ -50,9 +50,41 @@ st.title("Automatic Worksheet Generator 🎈 (Beta)")
 st.markdown("## By Pedagogical 🧠")
 email = st.text_input('Email')
 st.sidebar.markdown("# Automatic Worksheet Generator 🎈")
-st.sidebar.markdown("This worksheet generator was created using GPT-3. Please use it carefully and check any output before using it with learners as it could be biased or wrong.")
-st.sidebar.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18) !!")
-st.sidebar.markdown("As a former teacher who found resource creation time-consuming I made this tool to help teachers quickly make resources that are differentiable to their classes and can be on quite specific topics. I hope it helps!")
+st.sidebar.markdown("This worksheet generator was created using GPT-3. Please use it carefully and check any output before using it with learners as it could be biased or wrong. ")
+# st.sidebar.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18) !!")
+# st.sidebar.markdown("As a former teacher who found resource creation time-consuming I made this tool to help teachers quickly make resources that are differentiable to their classes and can be on quite specific topics. I hope it helps!")
+st.sidebar.markdown('This is an app designed to help teachers. Please give feedback so we can improve it.')
+went_well = st.sidebar.text_input('What do you like about the app?')
+even_better_if = st.sidebar.text_input('What could we improve?')
+submit_button = st.sidebar.button('Submit Feedback')
+st.sidebar.markdown("Sign up [here](https://calendly.com/philipfvbell) to have a 30 minute chat and help shape the app. We will also pay £15 compensation for your time!")
+
+if submit_button:
+    scope = ['https://spreadsheets.google.com/feeds']
+
+    credentials = service_account.Credentials.from_service_account_info(
+                    st.secrets["gcp_service_account"], scopes = scope)
+    client = Client(scope=scope,creds=credentials)
+    spreadsheetwrittenname = st.secrets["private_gsheets_written_url"]
+    spread = Spread(spreadsheetwrittenname,client = client)
+    # sh = client.open(spreadsheetname)
+    # worksheet_list = sh.worksheets()
+    # st.text(worksheet_list)
+    read_df_written = spread.sheet_to_df(index=False)
+    print(read_df_written.head())
+    written_emails = list(read_df_written.email.values)
+    written_www = list(read_df_written.www.values)
+    written_ebi = list(read_df_written.ebi.values)
+    written_emails.append(email)
+    written_www.append(went_well)
+    written_ebi.append(even_better_if)
+
+    d = {'email': written_emails, 'www': written_www, 'ebi': written_ebi}
+    written_df = pd.DataFrame(data=d)
+    def update_the_spreadsheet(spreadsheetname,dataframe):
+        spread.df_to_sheet(dataframe,sheet = spreadsheetname,index = False)
+    update_the_spreadsheet('written_feedback',written_df)
+
 ### Content ### - Either User-generated or from OpenAI. Alternative is to get it from Wikipedia.
 st.markdown("### Title/ Topic of worksheet")
 title = st.text_input('Title and topic of worksheet. For example: "The impact of the Industrial Revolution on the climate", "How to write a Python list comprehension", "What happens during Electrolysis?" or "The use of metaphor in Shakespeare\'s The Tempest Act 1"')
@@ -260,11 +292,15 @@ if worksheet_button and checked:
         kw_field_list = list(read_df.kw_field.values)
         pw_field_list = list(read_df.pw_field.values)
         bbs_field_list = list(read_df.bbs_field.values)
+        # www_field_list = list(read_df.www.values)
+        # ebi_field_list = list(read_df.ebi.values)
         q_field_list.append(q_field)
         qa_field_list.append(qa_field)
         kw_field_list.append(kw_field)
         pw_field_list.append(pw_field)
         bbs_field_list.append(bbs_field)
+        # www_field_list.append(' ')
+        # ebi_field_list.append(' ')
         today = datetime.now()
         emails.append(email)
         prompts.append(title)
@@ -301,4 +337,8 @@ if worksheet_button and checked:
         data=wordbyte,
         file_name="pedagogical_worksheet.docx",
         mime='application/octet-stream')
-        st.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18)!")
+
+
+        # how_much_pay = st.text_input('How much would you pay per month for this app?')
+        # st.markdown("Please give us feedback by [completing this form](https://forms.gle/RpgWtdKJonN75Ga18)!")
+
