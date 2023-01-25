@@ -337,6 +337,7 @@ if worksheet_button and checked:
         data=wordbyte,
         file_name="pedagogical_worksheet.docx",
         mime='application/octet-stream')
+        st.markdown("Please don't forget to come back and give us some feedback on the ⬅️ 😊")
 
 
         # how_much_pay = st.text_input('How much would you pay per month for this app?')
