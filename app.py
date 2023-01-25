@@ -57,7 +57,7 @@ st.sidebar.markdown('This is an app designed to help teachers. Please give feedb
 went_well = st.sidebar.text_input('What do you like about the app?')
 even_better_if = st.sidebar.text_input('What could we improve?')
 submit_button = st.sidebar.button('Submit Feedback')
-st.sidebar.markdown("Sign up [here](https://calendly.com/philipfvbell) to have a 30 minute chat and help shape the app. We will also pay £15 compensation for your time!")
+st.sidebar.markdown("Sign up [here](https://calendly.com/philipfvbell) to have a 30 minute chat and help shape the app. We will also pay £20 compensation for your time!")
 
 if submit_button:
     scope = ['https://spreadsheets.google.com/feeds']
